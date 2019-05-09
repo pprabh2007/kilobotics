@@ -1,0 +1,97 @@
+  -------------------------------------------------------------------------------------------------------------------------------------------
+        -- You should put your inital variable you would like to reset inside this function for your program.
+        -- It is called when the reset button of the controller is pushed.
+        reset_substate    = 0
+    
+        function run_reset()
+            robot_id = math.random(0, 255) -- reset robot id
+            -- below are variable to be reset for demo:
+            substate1=0
+            KiloState = 0
+            KiloCounter = 0
+            State = 0
+            other_robots_id = {}
+            TOO_CLOSE_DISTANCE = 40
+            DESIRED_DISTANCE = 60
+        end    
+    
+        
+        -------------------------------------------------------------------------------------------------------------------------------------------
+    
+        -- for demo
+        -- variables
+        substate1=0
+        KiloState = 0
+        KiloCounter = 0
+        State = 0
+        other_robots_id = {}    
+        -- constants
+        SLAVE     = 1
+        MASTER    = 2
+        INIT    =    0
+        WAIT    =    1
+        PGMCODE    =    77
+        TOO_CLOSE_DISTANCE = 40
+        DESIRED_DISTANCE = 60
+        -------------------------------------------------------------------------------------------------------------------------------------------
+        -- Functions similar to C API
+        -------------------------------------------------------------------------------------------------------------------------------------------    
+        
+        function user_prgm()
+        --/////////////////////////////////////////////////////////////////////////////////////
+        --//user program code goes below.  this code needs to exit in a resonable amount of time
+        --//so the special message controller can also run
+        --/////////////////////////////////////////////////////////////////////////////////////
+    
+        --/////////////////////////////////////////////////////////////////////////////////////
+        --//
+        --//  In the example below, the robot moves and display its distance 
+        --//  to other robots with its color led.
+        --//  
+        --////////////////////////////////////////////////////////////////////////////////////
+    
+    
+    
+            -- Set speed
+            -- set_motor(cw_in_place,0)
+            set_motor(cw_in_straight,ccw_in_straight)
+             
+            -- send message
+            -- message_out(2,3,4)
+    
+    
+            -- receive message and process it
+            --get_message()
+            if (message_rx[6]==1) then
+                -- process your message
+            end
+    
+            -- get distance to nearest obsctacle
+            result,distance,detectedPoint,detectedObjectHandle,detectedSurfaceNormalVector=sim.readProximitySensor(sensorHandle)
+    
+            if (distance < TOO_CLOSE_DISTANCE) then
+            
+                set_color(RGB(0, 1, 0));
+                set_motor(cw_in_straight,ccw_in_straight);
+            
+            -- If not too close, turn left or right depending on distance,
+            --   to maintain orbit.
+            else
+            
+                if (distance < DESIRED_DISTANCE) then
+                
+                    set_color(RGB(1, 0, 0));
+                    set_motor(0,ccw_in_straight);
+                
+                else
+                
+                    set_color(RGB(0, 0, 1));
+                    set_motor(cw_in_straight,0);
+                end
+            end
+      
+        
+        --////////////////////////////////////////////////////////////////////////////////////
+        --//END OF USER CODE
+        --////////////////////////////////////////////////////////////////////////////////////
+        end
